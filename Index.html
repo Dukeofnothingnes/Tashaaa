@@ -1,0 +1,209 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For Pookie ❤️</title>
+  <style>
+    body {
+      margin: 0;
+      background: #0b0b0f;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      overflow: hidden;
+    }.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+}
+
+input {
+  padding: 12px 18px;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+  outline: none;
+}
+
+button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: none;
+  background: linear-gradient(45deg, #ff4d6d, #ff85a1);
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#face {
+  width: 160px;
+  height: auto;
+  margin-bottom: 20px;
+  animation: idle 3s ease-in-out infinite;
+  transition: transform 0.2s;
+}
+
+@keyframes idle {
+  0% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(-1deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+#endBtn {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+}
+
+#speech {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.75);
+  border: 1px solid #ff85a1;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 14px;
+  max-width: 240px;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+  </style>
+</head>
+<body>  <div class="center" id="login">
+    <img id="face" src="nick.png" alt="Nick Wilde" />
+    <input type="password" id="pwd" placeholder="Enter password" />
+    <button onclick="checkPwd()">Enter</button>
+  </div>
+  <div id="speech"></div><canvas id="canvas"></canvas> <button id="endBtn" onclick="endSequence()">End Message</button>
+
+<script>
+const PASSWORD = "pookie";
+const speech = document.getElementById('speech');
+const sassy = ["You can do better my love 😏","Ufffff 🙄","Really, pookie? 😂"];
+const face = document.getElementById('face');
+const login = document.getElementById('login');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+function checkPwd() {
+  const val = document.getElementById('pwd').value;
+  if (val === PASSWORD) {
+    face.style.transform = 'scale(1.1)';
+    say("Yaaayyy! I knew you could do it, pookie 🦊❤️");
+    setTimeout(startMessage, 900);
+  } else {
+    face.style.transform = 'rotate(15deg)';
+    say(sassy[Math.floor(Math.random()*sassy.length)]);
+    setTimeout(() => face.style.transform = 'rotate(0)', 200);
+  }
+}
+
+function say(text){
+  speech.textContent = text;
+  speech.style.opacity = 1;
+  speech.style.transform = 'translateY(-10px)';
+  setTimeout(()=>speech.style.opacity=0,1500);
+} else {
+    face.style.transform = 'rotate(15deg)';
+    face.style.transform = 'rotate(20deg)';
+    setTimeout(() => face.style.transform = 'rotate(0)', 200);
+  }
+}
+
+function createTextParticles(text) {
+  particles = [];
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = 'white';
+  ctx.font = 'bold 60px Segoe UI';
+  ctx.textAlign = 'center';
+  ctx.fillText(text, canvas.width/2, canvas.height/2);
+
+  const data = ctx.getImageData(0,0,canvas.width,canvas.height).data;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  for (let y=0; y<canvas.height; y+=6) {
+    for (let x=0; x<canvas.width; x+=6) {
+      const i = (y*canvas.width + x)*4;
+      if (data[i+3] > 150) {
+        particles.push({
+          x: Math.random()*canvas.width,
+          y: Math.random()*canvas.height,
+          tx: x,
+          ty: y,
+          r: 2,
+          c: `hsl(${Math.random()*360},100%,70%)`
+        });
+      }
+    }
+  }
+}
+
+function animate() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particles.forEach(p => {
+    p.x += (p.tx - p.x)*0.05;
+    p.y += (p.ty - p.y)*0.05;
+    ctx.fillStyle = p.c;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fill();
+  });
+  requestAnimationFrame(animate);
+}
+
+function startMessage() {
+  login.style.display = 'none';
+  showLongMessage();
+}
+
+function showLongMessage(){
+  createTextParticles("I’m really not good with words, but I just want you to know that I love you.
+
+Things between us haven’t always been smooth, but my love for you is real.
+
+As we step into a new year, I want us to keep going, keep trying, and keep choosing each other.
+
+I love you, and I hope we continue together into this new year.");
+  animate();
+  document.getElementById('endBtn').textContent = 'Finish';
+  document.getElementById('endBtn').style.display = 'block';
+}
+
+function endSequence() {
+  document.getElementById('endBtn').style.display = 'none';
+  createTextParticles("❤️ I LOVE YOU TASHA ❤️");
+
+  // Nick blows a kiss
+  setTimeout(()=>{
+    face.style.transform = 'scale(1.1)';
+    say("Mwah 😘💖");
+  },1500);
+
+  setTimeout(() => createTextParticles("🎆 HAPPY NEW YEAR 🎆"), 3500);
+}
+
+function endSequence() {
+  createTextParticles("❤️ I LOVE YOU TASHA ❤️");
+  setTimeout(() => createTextParticles("🎆 HAPPY NEW YEAR 🎆"), 3000);
+}
+
+</script></body>
+</html>
